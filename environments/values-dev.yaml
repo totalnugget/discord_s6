@@ -1,0 +1,21 @@
+global:
+  environment: "development"
+  dockerRegistryRepository:
+  defaultStorageClassName: standard
+  mysqlReadyImage:
+    name: mysql/mysql-server
+    tag: 8.0.14
+  postgresReadyImage:
+    name: jbergknoff/postgresql-client
+    tag: latest
+  imagePullPolicy: Never
+  userService:
+    route: /api/users
+  keycloak:
+    route: /auth
+  guildService:
+    route: /api/guilds
+  channelService:
+    route: /api/channels
+  rabbitmq:
+    env: .env.dev

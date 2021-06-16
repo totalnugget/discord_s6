@@ -1,0 +1,67 @@
+# -*- mode: Python -*
+load('ext://local_output', 'local_output')
+load('ext://restart_process', 'docker_build_with_restart')
+
+config.define_string_list("to-run", args=True)
+
+allow_k8s_contexts('minikube-discord')
+
+docker_envs = local_output('minikube docker-env -p minikube-discord --shell \'none\'')
+for line in docker_envs.splitlines():
+    key_value = line.split('=')
+    os.putenv(key_value[0], key_value[1])
+
+host = local_output('./scripts/ip.sh -h')
+
+def get_helm_args():
+    args = []
+    command_output = local_output('kip helmargs')[1:-1].strip().split('--set')
+    for arg in command_output:
+        args.append(arg.strip())
+    return args
+
+
+k8s_yaml(helm('services/user-service/deployments/deployment',
+    name='user-service',
+    namespace='core',
+    values=['./environments/values-dev.yaml'],
+    set=['global.serverHost='+host] + get_helm_args()
+))
+
+#k8s_yaml(helm('services/organisation-service/deployments/deployment',
+#    name='organisation-service',
+#    namespace='core',
+#    values=['./environments/values-dev.yaml'],
+#    set=['global.serverHost='+host] + get_helm_args()
+#))
+
+cfg = config.parse()
+to_run = cfg.get('to-run', [])
+
+if 'user-service' in to_run:
+    docker_build(
+        'eu.gcr.io/discord-dev/user-service',
+        '.',
+        target='dev',
+        dockerfile='./services/user-service/Dockerfile',
+        live_update=[
+            sync('./services/user-service', '/app'),
+        ],
+        only=[
+            './services/user-service',
+        ]
+    )
+
+# if 'organisation-service' in to_run:
+#     docker_build(
+#         'eu.gcr.io/fitkid-dev/organisation-service',
+#         '.',
+#         target='dev',
+#         dockerfile='./services/organisation-service/Dockerfile',
+#         live_update=[
+#             sync('./services/organisation-service', '/app'),
+#         ],
+#         only=[
+#             './services/organisation-service',
+#         ]
+#     )

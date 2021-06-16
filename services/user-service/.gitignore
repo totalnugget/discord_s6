@@ -1,0 +1,13 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+**/appsettings.json
+*.DotSettings.user
+.vscode/
+.DS_Store
+.idea/
+/.vs
+**/logs/
+global.json
