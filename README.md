@@ -1,14 +1,23 @@
-# fitkid
+# discordapp
 
 ## Submodules
 
-Note the use of submodules within this project. Recommended to clone this using the following command:
+not using submodules for personal project
 
-```zsh
-git clone --recurse git@github.com:FHICT-S65-4/fitkid.git && git submodule foreach --recursive git checkout main
-```
+consists of 3 services
+- user service
+- guild service
+- channel service
 
-test
+SAAS used:
+- keycloak
+- rabitmq
+- swagger
 
-For more information about submodules have a look at this [GitHub's blog post](https://www.example.com).
-e
+tools used:
+- kubernetes
+  - helm
+  - kubedb
+  - ingress
+- docker
+- dotnet core

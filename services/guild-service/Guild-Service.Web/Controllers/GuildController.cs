@@ -1,32 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UserService.Domain.Enums;
-using UserService.Logic.Interfaces;
+using GuildService.Domain.Enums;
+using GuildService.Logic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using UserService.Domain.Entities;
-using UserService.Domain.DTOs;
+using GuildService.Domain.Entities;
+using GuildService.Domain.DTOs;
 using FitKidRabbitMQClient.Interfaces;
-using UserService.Domain.messages;
+using GuildService.Domain.messages;
 
-namespace UserService.Web.Controllers
+namespace GuildService.Web.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class GuildController : Controller
     {
-        private readonly IUserLogic _Logic;
+        private readonly IGuildLogic _Logic;
         private readonly IMessagePublisher _messagePublisher;
 
-        public UserController(IUserLogic Logic, IMessagePublisher messagePublisher) {
+        public GuildController(IGuildLogic Logic, IMessagePublisher messagePublisher) {
             _Logic = Logic;
             _messagePublisher = messagePublisher;
         }
 
         [HttpPost("")]
-        public ActionResult createUser(UserCreate user)
+        public ActionResult createGuild(GuildCreate guild)
         {
-            var result = _Logic.createUser(user.ToEntity());
+            var result = _Logic.CreateGuild(guild);
             if (result != null)
             {
                 return StatusCode(201, result);
@@ -36,29 +36,27 @@ namespace UserService.Web.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult deleteUser(int id)
+        public ActionResult deleteGuild(int id)
         {
-            User user = _Logic.FindUserById(id);
+            Guild guild = _Logic.FindGuildById(id);
 
-            if (_Logic.deleteUser(id))
+            if (_Logic.DeleteGuild(id))
             {
                 return StatusCode(200);
             }
-
-            _messagePublisher.PublishMessageAsync<UserDeleted>("UserDeleted", new UserDeleted { Id = id, Name = user.Name });
 
             return StatusCode(404);
         }
 
 
-        //bool updateUser(User user);
+        //bool updateGuild(Guild guild);
 
-        //bool deleteUser(int id);
+        //bool deleteGuild(int id);
         [HttpGet("{id}")]
-        public ActionResult<User> FindUserById(int id)
+        public ActionResult<Guild> FindGuildById(int id)
         {
 
-           var result = _Logic.FindUserById(id);
+           var result = _Logic.FindGuildById(id);
 
             if(result == null)
             {
@@ -69,10 +67,10 @@ namespace UserService.Web.Controllers
         }
 
         [HttpGet("/name/{name}")]
-        public ActionResult<User> FindUserByName(string name)
+        public ActionResult<Guild> FindGuildByName(string name)
         {
 
-            var result = _Logic.FindUserByName(name);
+            var result = _Logic.FindGuildByName(name);
 
             if (result == null)
             {
@@ -82,6 +80,6 @@ namespace UserService.Web.Controllers
             return StatusCode(201, result);
         }
 
-        //User FindUserByGUID(Guid guid);
+        //Guild FindGuildByGUID(Guid guid);
     }
 }

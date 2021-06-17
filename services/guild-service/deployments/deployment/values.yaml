@@ -1,0 +1,38 @@
+name: guild-service
+replicas: 1
+image:
+  name: guild-service
+  tag: development
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  periodSeconds: 15
+  path: /health
+  port: 80
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 15
+  timeoutSeconds: 5
+  periodSeconds: 5
+  path: /health
+  port: 80
+database:
+  name: guild
+  driver: postgres
+  port: 5432
+  host: guild-db
+  timezone: UTC
+  username:
+    name: guild-db-auth
+    key: POSTGRES_USER
+  password:
+    name: guild-db-auth
+    key: POSTGRES_PASSWORD
+rabbitmq:
+  password:
+    name: rabbitmq-user
+    key: rabbitmq-password
+type: ClusterIP
+servicePort: 80
+containerPort: 80

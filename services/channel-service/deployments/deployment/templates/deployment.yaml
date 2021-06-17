@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Values.name }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.name }}"
+    spec:
+      initContainers:
+        - name: check-postgres-ready
+          image: "{{ .Values.global.postgresReadyImage.name }}:{{ .Values.global.postgresReadyImage.tag }}"
+          command: ['sh', '-c', 'while ! pg_isready -h "{{ .Values.database.host }}" -p "{{ .Values.database.port }}" > /dev/null 2> /dev/null; do echo "waiting for postgres..." && sleep 1; done;']
+      containers:
+        - name: "{{ .Values.name }}"
+          image: "{{ .Values.global.services.channel_service.name }}:{{ .Values.global.services.channel_service.tag }}"
+          imagePullPolicy: "{{ .Values.global.imagePullPolicy }}"
+          {{ if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            httpGet:
+              path: "{{ .Values.readinessProbe.path }}"
+              port: {{ .Values.readinessProbe.port }}
+          {{ end }}
+          {{ if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            httpGet:
+              path: "{{ .Values.livenessProbe.path }}"
+              port: {{ .Values.livenessProbe.port }}
+          {{ end }}
+          env:
+            - name: DB_HOST
+              value: "{{ .Values.database.host }}"
+            - name: DB_PORT
+              value: "{{ .Values.database.port }}"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.database.username.name }}"
+                  key: "{{ .Values.database.username.key }}"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.database.password.name }}"
+                  key: "{{ .Values.database.password.key }}"
+            - name: DB_NAME
+              value: "{{ .Values.database.name }}"
+            - name: RABBITMQ-PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.rabbitmq.password.name }}"
+                  key: "{{ .Values.rabbitmq.password.key }}"
+            - name: Route
+              value: "{{ .Values.global.channelService.route }}"
+          ports:
+            - containerPort: {{ .Values.containerPort }}

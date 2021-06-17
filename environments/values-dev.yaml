@@ -19,3 +19,5 @@ global:
     route: /api/channels
   rabbitmq:
     env: .env.dev
+  FAASUrl:
+    BadWords: https://dappfunctions.azurewebsites.net/api/filterwords

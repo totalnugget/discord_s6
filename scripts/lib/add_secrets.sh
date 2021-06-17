@@ -15,8 +15,12 @@ fi
 # User
 kubectl create secret generic -n core user-db-auth --from-literal=POSTGRES_USER=$USER_DB_USERNAME --from-literal=POSTGRES_PASSWORD=$USER_DB_PASSWORD
 
-# Progress
-#kubectl create secret generic -n core progress-db-auth --from-literal=POSTGRES_USER=$PROGRESS_DB_USERNAME --from-literal=POSTGRES_PASSWORD=$PROGRESS_DB_PASSWORD
+# guild
+kubectl create secret generic -n core guild-db-auth --from-literal=POSTGRES_USER=$GUILD_DB_USERNAME --from-literal=POSTGRES_PASSWORD=$GUILD_DB_PASSWORD
+
+# channel
+kubectl create secret generic -n core channel-db-auth --from-literal=POSTGRES_USER=$CHANNEL_DB_USERNAME --from-literal=POSTGRES_PASSWORD=$CHANNEL_DB_PASSWORD
+
 
 # Keycloak
 kubectl create secret generic -n core realm-secret --from-file=$ROOT_PATH/deployments/keycloak/data/realm.json

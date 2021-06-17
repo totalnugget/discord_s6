@@ -1,6 +1,6 @@
 using System;
-using UserService.Data;
-using UserService.Logic;
+using ChannelService.Data;
+using ChannelService.Logic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using FitKidRabbitMQClient.Extensions;
-using UserService.Web.Messaging;
+using ChannelService.Web.Messaging;
 
-namespace UserService.Web
+namespace ChannelService.Web
 {
     public class Startup
     {
@@ -49,11 +49,11 @@ namespace UserService.Web
             string password = Environment.GetEnvironmentVariable("RABBITMQ-PASSWORD");
             Uri uri = new Uri($"amqp://user:{password}@rabbitmq:5672");
             string exchange = "main";
-            string queueName = "user_service";
+            string queueName = "channel_service";
 
             // The progress-Service should listen to the following message
             services.AddMessagePublishing(uri, exchange, queueName, builder => {
-                //builder.WithHandler<UserDeletedHandler>("UserDeleted");
+                builder.WithHandler<UserDeletedHandler>("UserDeleted");
             });
 
             services.AddSwaggerGen();
@@ -79,7 +79,7 @@ namespace UserService.Web
 
             if(path == null)
             {
-                path = "/api/users";
+                path = "/api/channels";
             }
             app.UseSwagger(c =>
             {
@@ -91,7 +91,7 @@ namespace UserService.Web
             });
             app.UseSwaggerUI(s =>
             {
-                s.SwaggerEndpoint("v1/swagger.json", "user Service");
+                s.SwaggerEndpoint("v1/swagger.json", "channel Service");
                 s.RoutePrefix = "docs";
             });
 

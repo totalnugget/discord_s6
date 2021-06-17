@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.name }}-init"
+data:
+  init.sql: |-
+    CREATE DATABASE "guild";
