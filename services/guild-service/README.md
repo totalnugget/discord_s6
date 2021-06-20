@@ -1,1 +1,1 @@
-# hackit-server
+# guild-server

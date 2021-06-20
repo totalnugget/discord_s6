@@ -6,7 +6,7 @@ namespace GuildService.Domain.Enums
 {
 
     [Flags]
-    public enum Permissions : uint
+    public enum Permissions : int
     {
         none = 0,
         ViewChannels = 1 << 0,
@@ -16,7 +16,7 @@ namespace GuildService.Domain.Enums
         ManageMessages = 1 << 4,
         ChangeNickname = 1 << 5,
         ManageNicknames = 1 << 6,
-        all = ~0u
+        all = int.MaxValue
 
     }
 }

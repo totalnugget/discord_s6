@@ -1,1 +1,1 @@
-# hackit-server
+# channel-server

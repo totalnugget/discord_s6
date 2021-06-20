@@ -11,7 +11,7 @@ namespace GuildService.Logic.Interfaces
     {
         ChannelPos FindChannelById(int guildId, int userId);
 
-        List<GuildUser> GetAllChannel(int guildId);
+        List<ChannelPos> GetAllChannels(int guildId);
 
         ChannelPos AddChannel(int guildId, ChannelPos channel);
 

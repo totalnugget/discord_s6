@@ -23,7 +23,7 @@ namespace GuildService.Domain.DTOs
                 Name = Name,
                 Description = Description,
                 Region = "eu",
-                Users = new List<GuildUser>() { new GuildUser() { UserId = 1, IsOwner = true, Nickname = OwnerName, Permissions = Enums.Permissions.all} }
+                Users = new List<GuildUser>() { new GuildUser() { UserId = OwnerId, IsOwner = true, Nickname = OwnerName, Permissions = Enums.Permissions.all} }
             };
         }
     }

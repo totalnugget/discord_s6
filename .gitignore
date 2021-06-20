@@ -248,3 +248,5 @@ junit.xml
 tilt_modules/
 generated/
 *.tgz
+
+nuget.config

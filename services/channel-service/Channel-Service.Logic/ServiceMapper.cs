@@ -16,8 +16,9 @@ namespace ChannelService.Logic
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(ConnectionStringUtil.GetConnectionString())
             );
-            
+
             services.AddTransient<IChannelLogic, ChannelLogic>();
+            services.AddTransient<IMessageLogic, MessageLogic>();
         }
     }
 }

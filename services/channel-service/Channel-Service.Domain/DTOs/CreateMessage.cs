@@ -5,17 +5,20 @@ using ChannelService.Domain.Entities;
 
 namespace ChannelService.Domain.DTOs
 {
-    public class CreateChannel
+    public class CreateMessage
     {
 
-        public string Name { get; set; }
+        public string AuthorName { get; set; }
 
-        public Channel ToEntity()
+        public int AuthorUserId { get; set; }
+
+        public string Content { get; set; }
+
+        public Message ToEntity() => new Message()
         {
-            return new Channel()
-            {
-                Name = Name
-            };
-        }
+            AuthorName = AuthorName,
+            AuthorUserId = AuthorUserId,
+            Content = Content,
+        };
     }
 }

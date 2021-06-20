@@ -18,5 +18,7 @@ namespace ChannelService.Logic.Interfaces
 
         List<Message> FindMessagesByUserId(int UserId);
 
+        List<Message> GetMessages(int channelId, DateTime beforeTime, int amount = 50);
+
     }
 }
