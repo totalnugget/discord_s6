@@ -34,7 +34,7 @@ jobs:
         run: |
           helm dependency update deployments/keycloak/
           helm dependency update deployments/rabbitmq/
-          helm dependency update deployments/swaggerui/
+          #helm dependency update deployments/swaggerui/
       - name: Prepare NuGet config
         run: |
           cp nuget.config.template nuget.config
