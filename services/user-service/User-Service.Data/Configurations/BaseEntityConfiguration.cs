@@ -10,6 +10,7 @@ namespace UserService.Data.Configurations
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {
             builder.HasKey(be => be.Id);
+            builder.Property(be => be.Id).HasIdentityOptions(startValue: 100);
             builder.Property(be => be.CreatedAt).IsRequired();
             builder.Property(be => be.LastUpdatedAt).IsRequired();
         }

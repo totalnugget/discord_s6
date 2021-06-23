@@ -57,6 +57,9 @@ namespace GuildService.Web.Controllers
         [HttpPost("{guildId:int}")]
         public ActionResult AddChannel (int guildId, ChannelPos channel)
         {
+            
+
+
             var result = _channelLogic.AddChannel(guildId, channel);
             if (result != null)
             {

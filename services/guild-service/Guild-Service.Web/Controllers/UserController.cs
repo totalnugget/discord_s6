@@ -8,6 +8,8 @@ using GuildService.Domain.Entities;
 using GuildService.Domain.DTOs;
 using FitKidRabbitMQClient.Interfaces;
 using GuildService.Domain.messages;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace GuildService.Web.Controllers
 {
@@ -18,6 +20,7 @@ namespace GuildService.Web.Controllers
         private readonly IGuildLogic _guildLogic;
         private readonly IUserLogic _userLogic;
         private readonly IMessagePublisher _messagePublisher;
+        private static readonly HttpClient client = new HttpClient();
 
         public UserController(IGuildLogic GuildLogic, IUserLogic userLogic, IMessagePublisher messagePublisher) {
             _guildLogic = GuildLogic;
@@ -55,8 +58,12 @@ namespace GuildService.Web.Controllers
         }
 
         [HttpPost("{guildId:int}")]
-        public ActionResult addUser(int guildId, AddUser user)
+        public async Task<ActionResult> addUser(int guildId, AddUser user)
         {
+            var resultUser = await client.GetAsync("http://user-service" + "/user/" + guildId);
+
+            Console.WriteLine(resultUser);
+
             var result = _userLogic.AddUser(guildId, user.UserId, user.Name);
             if (result != null)
             {

@@ -30,4 +30,4 @@ scripts:
 template: project
 version: v0.0.0+unreleased
 buildPath: '<projectDir>'
-repository: 'eu.gcr.io/discord-dev/'
+repository: 'eu.gcr.io/s65-4-314821/'

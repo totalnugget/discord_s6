@@ -27,6 +27,6 @@ helm install kubedb-catalog --version v0.13.0-rc.0 --namespace kube-system appsc
 # create secrets
 source ${ROOT_PATH}/scripts/lib/add_secrets.sh
 
-# not using kip
-# kip build
-# kip deploy
+#  using kip
+kip build
+kip deploy
