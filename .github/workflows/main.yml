@@ -1,7 +1,7 @@
-name: Build and Deploy to Google Cloud
+name: Build and Deploy to Google Cloud 1
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
         run: |
           helm dependency update deployments/keycloak/
           helm dependency update deployments/rabbitmq/
-          helm dependency update deployments/swaggerui/
+          #helm dependency update deployments/swaggerui/
       - name: Prepare NuGet config
         run: |
           cp nuget.config.template nuget.config
