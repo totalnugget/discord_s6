@@ -60,5 +60,7 @@ spec:
                   key: "{{ .Values.rabbitmq.password.key }}"
             - name: Route
               value: "{{ .Values.global.userService.route }}"
+            - name: RootUrl
+              value: "{{ .Values.global.RootUrl }}"
           ports:
             - containerPort: {{ .Values.containerPort }}

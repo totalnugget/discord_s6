@@ -60,9 +60,13 @@ namespace GuildService.Web.Controllers
         [HttpPost("{guildId:int}")]
         public async Task<ActionResult> addUser(int guildId, AddUser user)
         {
-            var resultUser = await client.GetAsync("http://user-service" + "/user/" + guildId);
+            var resultUser = await client.GetAsync("http://user-service" + "/user/" + user.UserId);
 
-            Console.WriteLine(resultUser);
+            Console.WriteLine("[http] received user: " + resultUser.Content);
+            if(resultUser.IsSuccessStatusCode)
+            {
+                return StatusCode(400, $"No client with id {user.UserId} was found");
+            }
 
             var result = _userLogic.AddUser(guildId, user.UserId, user.Name);
             if (result != null)

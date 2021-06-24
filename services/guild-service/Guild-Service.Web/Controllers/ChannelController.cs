@@ -8,6 +8,10 @@ using GuildService.Domain.Entities;
 using GuildService.Domain.DTOs;
 using FitKidRabbitMQClient.Interfaces;
 using GuildService.Domain.messages;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace GuildService.Web.Controllers
 {
@@ -18,6 +22,7 @@ namespace GuildService.Web.Controllers
         private readonly IGuildLogic _guildLogic;
         private readonly IChannelLogic _channelLogic;
         private readonly IMessagePublisher _messagePublisher;
+        private static readonly HttpClient client = new HttpClient();
 
         public ChannelController(IGuildLogic GuildLogic, IChannelLogic channelLogic, IMessagePublisher messagePublisher) {
             _guildLogic = GuildLogic;
@@ -55,10 +60,31 @@ namespace GuildService.Web.Controllers
         }
 
         [HttpPost("{guildId:int}")]
-        public ActionResult AddChannel (int guildId, ChannelPos channel)
+        public async Task<ActionResult> AddChannel (int guildId, ChannelPos channel)
         {
-            
+            HttpResponseMessage resultUser = null;
+            if (channel.ChannelId != 0)
+            {
+                resultUser = await client.GetAsync("http://channel-service" + "/Channel/" + channel.ChannelId);
+                Console.WriteLine("[http] received channel: " + resultUser.Content);
+            }
+            else
+            {
+                var content = new CreateChannel { Name = channel.Name };
+                var stringContent = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+                resultUser = await client.PostAsync("http://channel-service" + "/Channel", stringContent);
+                Console.WriteLine("[http] created channel: " + resultUser.Content);
 
+                string responseBody =  await resultUser.Content.ReadAsStringAsync();
+                var receivedchannel = JsonConvert.DeserializeObject<Channel>(responseBody);
+                channel.ChannelId = receivedchannel.Id;
+            }
+
+            
+            if (!resultUser.IsSuccessStatusCode)
+            {
+                return StatusCode(400, $"Could not create channel");
+            }
 
             var result = _channelLogic.AddChannel(guildId, channel);
             if (result != null)
@@ -72,6 +98,9 @@ namespace GuildService.Web.Controllers
         [HttpDelete("{guildId:int}/{id:int}")]
         public ActionResult RemoveChannel(int guildId, int id)
         {
+            client.DeleteAsync("http://channel-service" + "/Channel/" + id);
+
+
             bool isremoved = _channelLogic.RemoveChannel(guildId, id);
 
             if (isremoved)

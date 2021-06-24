@@ -42,11 +42,9 @@ namespace UserService.Web.Controllers
 
             if (_Logic.deleteUser(id))
             {
+                _messagePublisher.PublishMessageAsync<UserDeleted>("UserDeleted", new UserDeleted { Id = id, Name = user.Name });
                 return StatusCode(200);
             }
-
-            _messagePublisher.PublishMessageAsync<UserDeleted>("UserDeleted", new UserDeleted { Id = id, Name = user.Name });
-
             return StatusCode(404);
         }
 

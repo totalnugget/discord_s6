@@ -250,3 +250,4 @@ generated/
 *.tgz
 
 nuget.config
+deployments/rabbitmq/.env.*

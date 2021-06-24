@@ -8,6 +8,8 @@ using GuildService.Domain.Entities;
 using GuildService.Domain.DTOs;
 using FitKidRabbitMQClient.Interfaces;
 using GuildService.Domain.messages;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace GuildService.Web.Controllers
 {
@@ -17,6 +19,7 @@ namespace GuildService.Web.Controllers
     {
         private readonly IGuildLogic _Logic;
         private readonly IMessagePublisher _messagePublisher;
+        private static readonly HttpClient client = new HttpClient();
 
         public GuildController(IGuildLogic Logic, IMessagePublisher messagePublisher) {
             _Logic = Logic;
@@ -24,8 +27,16 @@ namespace GuildService.Web.Controllers
         }
 
         [HttpPost("")]
-        public ActionResult createGuild(GuildCreate guild)
+        public async Task<ActionResult> createGuild(GuildCreate guild)
         {
+            var resultUser = await client.GetAsync("http://user-service" + "/user/" + guild.OwnerId);
+
+            Console.WriteLine("[http] received user: " + resultUser.Content);
+            if (!resultUser.IsSuccessStatusCode)
+            {
+                return StatusCode(400, $"No user with id {guild.OwnerId} was found");
+            }
+
             var result = _Logic.CreateGuild(guild);
             if (result != null)
             {

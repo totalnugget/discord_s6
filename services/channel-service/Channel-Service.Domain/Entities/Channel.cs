@@ -10,5 +10,5 @@ namespace ChannelService.Domain.Entities
         public string Name { get; set; }
 
         public List<Message> Messages { get; set; } = new List<Message>();
-}
+    }
 }

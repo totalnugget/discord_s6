@@ -7,6 +7,8 @@ using ChannelService.Domain.Entities;
 using ChannelService.Domain.DTOs;
 using FitKidRabbitMQClient.Interfaces;
 using ChannelService.Domain.messages;
+using System.Net.Http;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace ChannelService.Web.Controllers
 {
@@ -16,6 +18,7 @@ namespace ChannelService.Web.Controllers
     {
         private readonly IChannelLogic _ChannelLogic;
         private readonly IMessageLogic _MessageLogic;
+        private static readonly HttpClient client = new HttpClient();
 
         public MessageController(IChannelLogic channelLogic, IMessageLogic messageLogic) {
             _ChannelLogic = channelLogic;
@@ -25,6 +28,16 @@ namespace ChannelService.Web.Controllers
         [HttpPost("{channelId:int}")]
         public ActionResult<Message> CreateMessage(int channelId, CreateMessage newMessage)
         {
+
+            string url = Environment.GetEnvironmentVariable("FAAS_BadWords");
+            var query = new Dictionary<string, string>
+            {
+                ["text"] = newMessage.Content,
+            };
+            var response = client.GetAsync(QueryHelpers.AddQueryString(url, query)).Result;
+            string filteredMessage = response.Content.ReadAsStringAsync().Result;
+            newMessage.Content = filteredMessage;
+
             var result = _MessageLogic.CreateMessage(channelId, newMessage);
             if (result != null)
             {
@@ -45,7 +58,7 @@ namespace ChannelService.Web.Controllers
                 return StatusCode(404);
             }
 
-            return StatusCode(201, result);
+            return StatusCode(200, result);
         }
 
         [HttpDelete("{MessageId:int}")]
@@ -87,9 +100,6 @@ namespace ChannelService.Web.Controllers
 
             return StatusCode(200, result);
         }
-
-
-
 
     }
 }

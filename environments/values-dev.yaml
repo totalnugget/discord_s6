@@ -21,3 +21,4 @@ global:
     env: .env.dev
   FAASUrl:
     BadWords: https://dappfunctions.azurewebsites.net/api/filterwords
+  RootUrl: http://localhost:8080

@@ -21,3 +21,4 @@ global:
     env: .env.prod
   FAASUrl:
     BadWords: https://dappfunctions.azurewebsites.net/api/filterwords
+  RootUrl: http://

@@ -45,7 +45,7 @@ namespace ChannelService.Web.Controllers
                 return StatusCode(404);
             }
 
-            return StatusCode(201, result);
+            return StatusCode(200, result);
         }
 
         [HttpDelete("{id:int}")]

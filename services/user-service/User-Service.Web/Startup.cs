@@ -55,8 +55,29 @@ namespace UserService.Web
             services.AddMessagePublishing(uri, exchange, queueName, builder => {
                 //builder.WithHandler<UserDeletedHandler>("UserDeleted");
             });
+            
+            string KeycloakUrl = Environment.GetEnvironmentVariable("RootUrl") + "/auth";
+            services.AddSwaggerGen(options => {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Protected API", Version = "v1" });
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri(KeycloakUrl + "/realms/Discord/protocol/openid-connect/auth"),
+                            TokenUrl = new Uri(KeycloakUrl + "/realms/Discord/protocol/openid-connect/token"),
+                            Scopes = new Dictionary<string, string>
+                            {
+                                {"openid", "openid"}, { "profile", "profile"}
+                            }
+                            
+                        }
+                    }
+                });
 
-            services.AddSwaggerGen();
+            });
 
             ServiceMapper.ConfigureServices(services, _configuration);
         }
@@ -93,6 +114,9 @@ namespace UserService.Web
             {
                 s.SwaggerEndpoint("v1/swagger.json", "user Service");
                 s.RoutePrefix = "docs";
+                s.OAuthClientId("angular");
+                s.OAuthAppName("Demo API - Swagger");
+                s.OAuthUsePkce();
             });
 
             app.UseRouting();
