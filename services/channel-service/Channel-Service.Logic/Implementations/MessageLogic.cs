@@ -76,5 +76,12 @@ namespace ChannelService.Logic.Implementations
             var channel = _context.Channel.Include(x => x.Messages).FirstOrDefault(x => x.Id == channelId);
             return channel.Messages.Where(x => x.CreatedAt < beforeTime).OrderByDescending(x => x.CreatedAt).Take(amount).ToList();
         }
+
+        public List<Message> GetMessagesMentions(int channelId, int UserMentioned, DateTime beforeTime, int amount = 50)
+        {
+            if (beforeTime == DateTime.MinValue) beforeTime = DateTime.MaxValue;
+            
+            return _context.Message.Where(x => x.CreatedAt < beforeTime && x.Mentions.Contains(UserMentioned)).OrderByDescending(x => x.CreatedAt).Take(amount).ToList();
+        }
     }
 }

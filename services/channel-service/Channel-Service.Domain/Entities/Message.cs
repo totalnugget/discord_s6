@@ -16,6 +16,8 @@ namespace ChannelService.Domain.Entities
 
         public bool IsPinned { get; set; } = false;
 
+        public int[] Mentions { get; set; }
+
 
     }
 }

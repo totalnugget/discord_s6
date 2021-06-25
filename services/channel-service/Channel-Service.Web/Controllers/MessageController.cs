@@ -101,5 +101,18 @@ namespace ChannelService.Web.Controllers
             return StatusCode(200, result);
         }
 
+        [HttpGet("allMentions/{UserId:int}")]
+        public ActionResult<Message> GetMessagesMentions(int UserId, int amount, DateTime beforeTime)
+        {
+            var result = _MessageLogic.GetMessagesMentions(0, UserId, beforeTime, amount);
+
+            if (result == null)
+            {
+                return StatusCode(404);
+            }
+
+            return StatusCode(200, result);
+        }
+
     }
 }

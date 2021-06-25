@@ -14,11 +14,14 @@ namespace ChannelService.Domain.DTOs
 
         public string Content { get; set; }
 
+        public List<int> Mentions { get; set; } = new List<int>();
+
         public Message ToEntity() => new Message()
         {
             AuthorName = AuthorName,
             AuthorUserId = AuthorUserId,
             Content = Content,
+            Mentions = Mentions.ToArray(),
         };
     }
 }

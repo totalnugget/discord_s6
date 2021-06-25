@@ -20,5 +20,7 @@ namespace ChannelService.Logic.Interfaces
 
         List<Message> GetMessages(int channelId, DateTime beforeTime, int amount = 50);
 
+        List<Message> GetMessagesMentions(int channelId, int UserMentioned, DateTime beforeTime, int amount = 50);
+
     }
 }
