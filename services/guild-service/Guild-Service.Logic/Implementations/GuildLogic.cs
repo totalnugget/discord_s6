@@ -14,10 +14,12 @@ namespace GuildService.Logic.Implementations
     public class GuildLogic : IGuildLogic
     {
         private readonly ApplicationDbContext _context;
+        private readonly IChannelLogic channelLogic;
 
-        public GuildLogic(ApplicationDbContext context)
+        public GuildLogic(ApplicationDbContext context, IChannelLogic channelLogic)
         {
             _context = context;
+            this.channelLogic = channelLogic;
         }
 
 
@@ -37,6 +39,15 @@ namespace GuildService.Logic.Implementations
             {
                 return false;
             }
+
+            // cascade channels
+            for (int i = 0; i < guild.Channels.Count; i++)
+            {
+                channelLogic.RemoveChannel(guild.Id, guild.Channels[i].ChannelId);
+            }
+
+            
+
             _context.Guild.Remove(guild);
             _context.SaveChanges();
             return true;

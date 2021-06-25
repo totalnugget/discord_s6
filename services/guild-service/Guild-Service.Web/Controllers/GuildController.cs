@@ -29,7 +29,7 @@ namespace GuildService.Web.Controllers
         [HttpPost("")]
         public async Task<ActionResult> createGuild(GuildCreate guild)
         {
-            var resultUser = await client.GetAsync("http://user-service" + "/user/" + guild.OwnerId);
+            var resultUser = await client.GetAsync("http://user-service" + "/User/" + guild.OwnerId);
 
             Console.WriteLine("[http] received user: " + resultUser.Content);
             if (!resultUser.IsSuccessStatusCode)
